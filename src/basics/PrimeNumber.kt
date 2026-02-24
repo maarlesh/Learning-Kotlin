@@ -2,12 +2,12 @@ package basics
 
 import kotlin.math.sqrt
 
-class PrimeNumber(val range: Int) {
-    fun getN(): Array<Int> {
+class PrimeNumber() {
+    fun getN(range: Int): Array<Int> {
         //TODO: Replace this with MutableList
         //Using immutable list takes lot of memory
         var result = emptyArray<Int>();
-        for (i in 2..this.range) {
+        for (i in 2..range) {
             if(isPrime(i)){
                 result += i;
             }
@@ -32,8 +32,8 @@ fun main() {
     println("Enter range n:");
     val n = readln().toInt();
     println("Prime numbers upto: $n");
-    val primeNumber = PrimeNumber(n);
-    val res = primeNumber.getN();
+    val primeNumber = PrimeNumber();
+    val res = primeNumber.getN(n);
 
     println(res.joinToString(","));
 }
