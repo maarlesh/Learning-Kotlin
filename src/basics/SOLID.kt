@@ -90,4 +90,70 @@ class OrderCoordinator(
 
 
 
+/* Open - Closed Principle
+Closed for modification
+Open for extension
+Key: Adding a new behaviour without changing the old code
+ */
 
+class GSTCalculator{
+    fun calculatePrice(product: String)  : Number {
+        return when(product){
+            "BISCUIT" -> 0.18
+            "MEDICINE" -> 0
+            "CHOCOLATE" -> 0.15
+            "MASALAS" -> 0.05
+            "CIGARETTES" -> 0.40
+            else -> 0.10
+        }
+    }
+}
+
+// Now what if new category is added over here
+// We need to add "NEW1" -> 0.04 .... so on
+// Disadvantages: Giant If else chain, Risk of breaking billing logic, Every new features modifies old code
+
+
+// Fix: Use Interface
+
+interface  GST {
+    fun calculatePrice(price: Double): Number
+}
+
+class BiscuitGST : GST {
+    override fun calculatePrice(price: Double): Number {
+        return price * 0.18
+    }
+}
+
+class MedicineGST : GST {
+    override fun calculatePrice(price: Double): Number {
+        return price * 0
+    }
+}
+
+class ChocolateGST : GST {
+    override fun calculatePrice(price: Double): Number {
+        return price * 0.15
+    }
+}
+// The logic can be extended using the interface
+
+
+// Actual business logic - Closed for modification
+class GSTBiller(private val gst: GST) {
+    fun generateGSTBill(price: Double): Double {
+        return price + gst.calculatePrice(price).toDouble()
+    }
+}
+
+// Actual Usage
+fun main() {
+
+    val biscuitGST = BiscuitGST()
+    val biller = GSTBiller(biscuitGST)
+
+    val finalPrice = biller.generateGSTBill(100.0)
+
+    println(finalPrice)
+}
