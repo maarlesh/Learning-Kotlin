@@ -259,3 +259,80 @@ class WarehouseProduct :
         println("Synced")
     }
 }
+
+
+/* D -> Dependency Inversion
+High level module should not depend too much on low level module. Instead both should depend upon abstractions
+ */
+
+// Bad usage
+class MySQLDatabase {
+
+    fun save(data: String) {
+        println("Saved to MySQL")
+    }
+}
+
+class BillingService {
+
+    private val db = MySQLDatabase()
+
+    fun generateBill() {
+        db.save("bill data")
+    }
+}
+
+
+// What is wrong?
+//BillingService is high-level logic.
+//MySQLDatabase is low-level detail.
+
+
+// Fix
+
+interface Database {
+    fun save(data: String)
+}
+
+//Implement low level classes
+class MySQLDatabase2 : Database {
+
+    override fun save(data: String) {
+        println("Saved to MySQL")
+    }
+}
+
+class FirebaseDatabase : Database {
+
+    override fun save(data: String) {
+        println("Saved to Firebase")
+    }
+}
+
+
+// Now high level classes depends on interface (Not on low level classes)
+class BillingService2(
+    private val db: Database
+) {
+
+    fun generateBill() {
+        db.save("bill data")
+    }
+}
+
+// Inject dependency
+
+fun main2() {
+    val db = MySQLDatabase2()
+    val billing = BillingService2(db)
+    billing.generateBill()
+}
+
+// Normal
+//High level → Low level
+
+// After dependency inversion
+// High level → Interface ← Low level
+
+// This is getting used in real android
+// ViewModel, Repository,
