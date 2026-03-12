@@ -25,13 +25,33 @@ class FrequencyCounter {
         }
         return result;
     }
+
+    fun getDuplicateElements(arr: MutableList<Int>){
+        val map = this.getFrequencies2(arr)
+        println("Duplicate elements are: ")
+        for ((key,value) in map){
+            if(value > 1){
+                println("$key ")
+            }
+        }
+    }
+
+    fun getFrequenciesOfWords(str : String) : HashMap<String,Int>{
+        val map: HashMap<String, Int> = hashMapOf()
+        val words = str.split(" ")
+        for(i in words){
+            map[i] = (map[i] ?: 0) + 1
+        }
+        return map
+    }
 }
 
 fun main(){
     val arrayInput : ArrayInput = ArrayInput()
     val arr = arrayInput.getArray()
-    print(arr.joinToString(","))
+    println(arr.joinToString(","))
     val result = FrequencyCounter().getFrequencies(arr);
 //    print("Occcurences: $result")
-    print(FrequencyCounter().getFrequencies2(arr))
+    println(FrequencyCounter().getFrequencies2(arr))
+    FrequencyCounter().getDuplicateElements(arr);
 }
