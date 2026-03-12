@@ -157,3 +157,105 @@ fun main() {
 
     println(finalPrice)
 }
+
+
+/* L -> Liskov Substitution Principle
+Object of a superclass must be replaceable with the objects of the subclass without breaking the program
+If B extends A, then B must BEHAVE LIKE A
+If swapping the subclass changes expected behavior, the design is wrong
+ */
+
+
+open class Bird {
+    open fun fly() {
+        println("Flying")
+    }
+}
+
+class Sparrow : Bird()
+
+class Penguin : Bird() {
+    override fun fly() {
+        throw UnsupportedOperationException("Penguins cannot fly")
+    }
+}
+
+fun makeBirdFly(bird: Bird) {
+    bird.fly()
+}
+
+// This works
+// makeBirdFly(Sparrow())
+
+// But this will throw error
+// makeBirdFly(Penguin())
+
+// Subclass cannot substitute the parent.
+
+
+
+
+/* 4 - I -> Interface Segregation Principle
+Clients should not be forced to depend on interfaces they do not use
+Don’t make big interfaces.
+Split them into smaller ones.
+ */
+
+// Bad design
+
+interface ProductOperations {
+
+    fun calculateGST(price: Double): Double
+
+    fun applyDiscount(price: Double): Double
+
+    fun printLabel()
+
+    fun syncToServer()
+
+    fun generateBarcode()
+}
+
+// Good design
+
+interface GSTApplicable {
+    fun calculateGST(price: Double): Double
+}
+
+interface Discountable {
+    fun applyDiscount(price: Double): Double
+}
+
+interface LabelPrintable {
+    fun printLabel()
+}
+
+interface Syncable {
+    fun syncToServer()
+}
+
+interface BarcodeGeneratable {
+    fun generateBarcode()
+}
+
+class BiscuitProduct : GSTApplicable, Discountable {
+
+    override fun calculateGST(price: Double) = price * 0.18
+
+    override fun applyDiscount(price: Double) = price * 0.9
+}
+
+class WarehouseProduct :
+    GSTApplicable, BarcodeGeneratable,
+    Syncable {
+
+    override fun calculateGST(price: Double) = price * 0.05
+
+    override fun generateBarcode() {
+        println("Barcode generated")
+    }
+
+    override fun syncToServer() {
+        println("Synced")
+    }
+}
